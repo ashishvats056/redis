@@ -1,7 +1,5 @@
 package redis
 
-import "time"
-
 type ValueType int
 
 const (
@@ -26,12 +24,7 @@ func NewDB() DB {
 	}
 }
 
-func (db *DB) Set(key string, value any, ttl int64, entryType ValueType) {
-	var expiresAt int64
-
-	if ttl > 0 {
-		expiresAt = time.Now().UnixNano() + ttl*int64(time.Millisecond)
-	}
+func (db *DB) Set(key string, value any, expiresAt int64, entryType ValueType) {
 
 	db.data[key] = Entry{
 		Type:      entryType,
