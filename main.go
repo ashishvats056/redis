@@ -6,7 +6,7 @@ import (
 	"net"
 	"strings"
 
-	"example.com/personal_projects/redis/redis"
+	"example.com/personal_projects/redis/src/redis"
 )
 
 var queue = make(chan redis.Command, 100)
