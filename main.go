@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"net"
 	"strings"
 
@@ -42,6 +43,10 @@ func handleConnection(conn net.Conn) {
 
 		line, err := reader.ReadString('\n')
 		if err != nil {
+			if err == io.EOF {
+				fmt.Println("client disconnected:", conn.RemoteAddr())
+				return
+			}
 			fmt.Println("read error:", err)
 			return
 		}
