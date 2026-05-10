@@ -13,7 +13,7 @@ func handleHSet(db *DB, cmd Command) {
 	field := cmd.Args[1]
 	value := cmd.Args[2]
 
-	entry, ok := getEntry(db, key)
+	entry, ok := db.Get(key)
 
 	var hash map[string]string
 	var expiresAt int64 = 0
@@ -32,11 +32,7 @@ func handleHSet(db *DB, cmd Command) {
 
 	hash[field] = value
 
-	db.data[key] = Entry{
-		Type:      HashType,
-		Value:     hash,
-		ExpiresAt: expiresAt,
-	}
+	db.Set(key, hash, expiresAt, HashType)
 
 	cmd.Result <- Response{Data: "OK"}
 }

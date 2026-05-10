@@ -3,9 +3,7 @@ package redis
 import "fmt"
 
 func EventLoop(queue <-chan Command) {
-	db := DB{
-		data: make(map[string]Entry),
-	}
+	db := NewDB()
 
 	startCleaner(&db)
 

@@ -12,7 +12,7 @@ func handleHGet(db *DB, cmd Command) {
 	key := cmd.Args[0]
 	field := cmd.Args[1]
 
-	entry, ok := getEntry(db, key)
+	entry, ok := db.Get(key)
 	if !ok {
 		cmd.Result <- Response{Err: fmt.Errorf("key not found")}
 		return

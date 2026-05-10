@@ -17,7 +17,7 @@ func handleLRange(db *DB, cmd Command) {
 	start, _ := strconv.Atoi(cmd.Args[1])
 	end, _ := strconv.Atoi(cmd.Args[2])
 
-	entry, ok := getEntry(db, key)
+	entry, ok := db.Get(key)
 	if !ok {
 		cmd.Result <- Response{Err: fmt.Errorf("key not found")}
 		return

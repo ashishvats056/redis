@@ -27,11 +27,7 @@ func handleSet(db *DB, cmd Command) {
 		}
 	}
 
-	db.data[key] = Entry{
-		Type:      StringType,
-		Value:     value,
-		ExpiresAt: expiresAt,
-	}
+	db.Set(key, value, expiresAt, StringType)
 
 	cmd.Result <- Response{
 		Data: "OK",

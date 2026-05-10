@@ -12,7 +12,7 @@ func handleLAdd(db *DB, cmd Command) {
 	key := cmd.Args[0]
 	value := cmd.Args[1]
 
-	entry, ok := getEntry(db, key)
+	entry, ok := db.Get(key)
 
 	var list []string
 
@@ -28,10 +28,7 @@ func handleLAdd(db *DB, cmd Command) {
 
 	list = append(list, value)
 
-	db.data[key] = Entry{
-		Type:  ListType,
-		Value: list,
-	}
+	db.Set(key, list, 0, ListType)
 
 	cmd.Result <- Response{Data: "OK"}
 }

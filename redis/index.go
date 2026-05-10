@@ -20,7 +20,7 @@ func handleIndex(db *DB, cmd Command) {
 		return
 	}
 
-	entry, ok := getEntry(db, key)
+	entry, ok := db.Get(key)
 	if !ok {
 		cmd.Result <- Response{Err: fmt.Errorf("key not found")}
 		return

@@ -22,17 +22,3 @@ func startCleaner(db *DB) {
 		}
 	}()
 }
-
-func getEntry(db *DB, key string) (Entry, bool) {
-	entry, ok := db.data[key]
-	if !ok {
-		return Entry{}, false
-	}
-
-	if isExpired(entry) {
-		delete(db.data, key)
-		return Entry{}, false
-	}
-
-	return entry, true
-}

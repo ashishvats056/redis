@@ -58,7 +58,7 @@ ncat localhost 6379
 
 ### SET
 ```text
-SET name john
+SET name john [ttl_seconds(optional)]
 ```
 
 ### GET
@@ -114,18 +114,40 @@ INDEX mylist 0
 
 ## TTL Support
 
-### SET with TTL (seconds)
+### EXPIRE
 ```text
-SET name john 10
+EXPIRE key seconds
 ```
 
-Key expires after 10 seconds.
+---
+
+### TTL
+```text
+TTL key
+```
+
+Returns:
+- remaining seconds
+- -1 → no TTL
+- -2 → key not found / expired
+
+---
+
+### PERSIST
+```text
+PERSIST key
+```
+
+Removes TTL from key.
+
+---
 
 ### TTL Behavior
-- TTL applies to the entire key (not fields inside hashes/lists)
-- Expiration is handled via:
+- TTL applies to the **entire key**
+- Not per field (hash/list items are not individually expirable)
+- Expired keys are removed via:
   - lazy deletion on access
-  - continous background cleanup
+  - background cleanup goroutine
 
 ---
 
@@ -140,7 +162,7 @@ Connection Goroutines
     ↓
 Command Parser
     ↓
-Command Queue (channel)
+Channel Queue
     ↓
 Single Event Loop (Worker)
     ↓

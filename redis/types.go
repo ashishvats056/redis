@@ -1,5 +1,7 @@
 package redis
 
+import "time"
+
 type ValueType int
 
 const (
@@ -16,6 +18,40 @@ type Entry struct {
 
 type DB struct {
 	data map[string]Entry
+}
+
+func NewDB() DB {
+	return DB{
+		data: make(map[string]Entry),
+	}
+}
+
+func (db *DB) Set(key string, value any, ttl int64, entryType ValueType) {
+	var expiresAt int64
+
+	if ttl > 0 {
+		expiresAt = time.Now().UnixNano() + ttl*int64(time.Millisecond)
+	}
+
+	db.data[key] = Entry{
+		Type:      entryType,
+		Value:     value,
+		ExpiresAt: expiresAt,
+	}
+}
+
+func (db *DB) Get(key string) (Entry, bool) {
+	entry, ok := db.data[key]
+	if !ok {
+		return Entry{}, false
+	}
+
+	if isExpired(entry) {
+		delete(db.data, key)
+		return Entry{}, false
+	}
+
+	return entry, true
 }
 
 type Command struct {
@@ -37,13 +73,19 @@ type CommandRequest struct {
 type HandlerFunc func(*DB, Command)
 
 var commands = map[string]HandlerFunc{
-	"SET":    handleSet,
-	"GET":    handleGet,
-	"DEL":    handleDel,
-	"MGET":   handleMGet,
-	"HSET":   handleHSet,
-	"HGET":   handleHGet,
+	"SET":  handleSet,
+	"GET":  handleGet,
+	"DEL":  handleDel,
+	"MGET": handleMGet,
+
+	"HSET": handleHSet,
+	"HGET": handleHGet,
+
 	"LADD":   handleLAdd,
 	"LRANGE": handleLRange,
 	"INDEX":  handleIndex,
+
+	"EXPIRE":  handleExpire,
+	"TTL":     handleTTL,
+	"PERSIST": handlePersist,
 }
