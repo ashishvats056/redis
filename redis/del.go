@@ -1,0 +1,20 @@
+package redis
+
+import "fmt"
+
+func handleDel(db *DB, cmd Command) {
+	if len(cmd.Args) != 1 {
+		cmd.Result <- Response{
+			Err: fmt.Errorf("DEL requires key"),
+		}
+		return
+	}
+
+	key := cmd.Args[0]
+
+	delete(db.data, key)
+
+	cmd.Result <- Response{
+		Data: "OK",
+	}
+}
