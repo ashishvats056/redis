@@ -9,8 +9,9 @@ const (
 )
 
 type Entry struct {
-	Type  ValueType
-	Value any
+	Type      ValueType
+	Value     any
+	ExpiresAt int64 // unix nano, 0 = never expires
 }
 
 type DB struct {
@@ -36,13 +37,13 @@ type CommandRequest struct {
 type HandlerFunc func(*DB, Command)
 
 var commands = map[string]HandlerFunc{
-	"SET":  handleSet,
-	"GET":  handleGet,
-	"DEL":  handleDel,
-	"MGET": handleMGet,
-	// "HSET":   handleHSet,
-	// "HGET":   handleHGet,
-	// "LADD":   handleLAdd,
-	// "LRANGE": handleLRange,
-	// "INDEX":  handleIndex,
+	"SET":    handleSet,
+	"GET":    handleGet,
+	"DEL":    handleDel,
+	"MGET":   handleMGet,
+	"HSET":   handleHSet,
+	"HGET":   handleHGet,
+	"LADD":   handleLAdd,
+	"LRANGE": handleLRange,
+	"INDEX":  handleIndex,
 }

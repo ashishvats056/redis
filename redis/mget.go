@@ -6,7 +6,7 @@ func handleMGet(db *DB, cmd Command) {
 
 	for _, key := range cmd.Args {
 
-		entry, ok := db.data[key]
+		entry, ok := getEntry(db, key)
 
 		if !ok || entry.Type != StringType {
 			result = append(result, "")
