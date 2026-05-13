@@ -12,6 +12,13 @@ func handleDel(db *DB, cmd Command) {
 
 	key := cmd.Args[0]
 
+	if _, exists := db.Get(key); !exists {
+		cmd.Result <- Response{
+			Err: fmt.Errorf("key not found"),
+		}
+		return
+	}
+
 	db.Delete(key)
 
 	cmd.Result <- Response{
