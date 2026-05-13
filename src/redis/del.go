@@ -12,7 +12,7 @@ func handleDel(db *DB, cmd Command) {
 
 	key := cmd.Args[0]
 
-	delete(db.data, key)
+	db.Delete(key)
 
 	cmd.Result <- Response{
 		Data: "OK",

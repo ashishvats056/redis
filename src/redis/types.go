@@ -47,6 +47,10 @@ func (db *DB) Get(key string) (Entry, bool) {
 	return entry, true
 }
 
+func (db *DB) Delete(key string) {
+	delete(db.data, key)
+}
+
 type Command struct {
 	Name   string
 	Args   []string
